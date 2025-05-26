@@ -9,4 +9,9 @@ for bri in $(seq $sta $end); do
     ((counter++))
 done
 
-echo "int ran "
+for int in $(seq $sta $end); do
+    echo "interface ran ten 1/0/$int ten 2/0/$int "
+    echo "p l g $int"
+    echo " quit"
+    ((counter++))
+done
