@@ -1,0 +1,9 @@
+name: Run Shell Script
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Execute script
+        run: bash ./net.sh  # 运行仓库中的Shell脚本
