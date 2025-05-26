@@ -17,10 +17,9 @@ for int in $(seq $sta $end); do
 done
 
 echo  "int range bri $sta to $end "
-cat <<eof
 port link-type trunk
  undo port trunk permit vlan 1
  port trunk permit vlan 200 290 300 390 400 to 401 600 700
  link-aggregation mode dynamic
  stp root-protection
- eof
+
