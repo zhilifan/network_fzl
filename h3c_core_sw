@@ -1,0 +1,138 @@
+主设备配置
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ shutdown
+#
+irf member 1 priority 32
+#
+#
+#
+#
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ shutdown
+#
+irf-port 1/1
+ port group interface HundredGigE1/0/53
+#
+irf-port 1/2
+ port group interface HundredGigE1/0/54
+#
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ undo shutdown
+#
+save force
+#
+irf-port-configuration active
+#
+
+备设备配置
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ shutdown
+#
+irf 1 member 1 renumber 2
+y
+#
+irf member 1 priority 16
+#
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ shutdown
+#
+irf-port 1/1
+ port group interface HundredGigE1/0/53
+#
+irf-port 1/2
+ port group interface HundredGigE1/0/54
+#
+interface range HundredGigE 1/0/53 to HundredGigE 1/0/54
+ undo shutdown
+#
+save force
+#
+irf-port-configuration active
+#
+reboot
+ip vpn-instance BFD-MAD	
+  description BFD-MAD	
+vlan 4090	
+ description BFD MAD	
+ port Ten-GigabitEthernet 1/0/48	
+ port Ten-GigabitEthernet 2/0/48	
+#	
+interface vlan-interface 4090	
+ ip binding vpn-instance BFD-MAD	
+ description BFD MAD	
+ mad bfd enable	
+ mad ip address 1.1.1.1 30 member 1	
+ mad ip address 1.1.1.2 30 member 2	
+#	
+interface Ten-GigabitEthernet 1/0/48	
+ undo stp enable	
+#	
+interface Ten-GigabitEthernet 2/0/48	
+ undo stp enable	
+M-LAG组网主配置
+ip vpn-instance keepalive
+  description keepalive
+#
+interface Bridge-Aggregation 1024
+ quit
+#
+interface range FortyGigE1/0/49 to FortyGigE1/0/50
+ port link-aggregation group 1024
+ quit
+#
+interface Bridge-Aggregation 1024
+ description peer-link
+ port link-type trunk
+ port trunk permit vlan all
+ link-aggregation mode dynamic
+ port m-lag peer-link 1
+ undo mac-address static source-check enable
+#
+interface Ten-GigabitEthernet1/0/48
+ description keepalive
+ port link-mode route
+ ip binding vpn-instance keepalive
+ ip address 1.1.1.1 255.255.255.252
+#
+m-lag system-mac H-H-H
+m-lag system-number 1
+m-lag role priority 0
+m-lag system-priority 123
+m-lag mad exclude logical-interfaces
+m-lag mad exclude interface ten-gigabitethernet 1/0/48
+m-lag standalone enable
+m-lag keepalive ip destination 1.1.1.2 source 1.1.1.1 vpn-instance keepalive
+M-LAG组网备配置
+ip vpn-instance keepalive
+  description keepalive
+#
+interface Bridge-Aggregation 1024
+ quit
+#
+interface range FortyGigE1/0/49 to FortyGigE1/0/50
+ port link-aggregation group 1024
+ quit
+#
+interface Bridge-Aggregation 1024
+ description peer-link
+ port link-type trunk
+ port trunk permit vlan all
+ link-aggregation mode dynamic
+ port m-lag peer-link 1
+ undo mac-address static source-check enable
+#
+interface Ten-GigabitEthernet1/0/48
+ description keepalive
+ port link-mode route
+ ip binding vpn-instance keepalive
+ ip address 1.1.1.2 255.255.255.252
+#
+m-lag system-mac H-H-H
+m-lag system-number 2
+m-lag role priority 10
+m-lag system-priority 123
+m-lag mad exclude logical-interfaces
+m-lag mad exclude interface ten-gigabitethernet 1/0/48
+m-lag standalone enable
+m-lag keepalive ip destination 1.1.1.1 source 1.1.1.2 vpn-instance keepalive
+#
