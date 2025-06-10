@@ -1,0 +1,438 @@
+主设备配置
+interface 40GE0/0/5
+ shutdown
+interface 40GE0/0/6
+ shutdown
+#
+interface stack-port 0/1
+ port interface 40GE0/0/5 enable
+#
+interface stack-port 0/1
+ port interface 40GE0/0/6 enable
+#
+备设备配置
+stack slot 0 renumber 1
+stack slot 1 priority 100
+#
+interface 40GE1/0/5
+ shutdown
+interface 40GE1/0/6
+ shutdown
+#
+interface stack-port 1/1
+ port interface 40GE1/0/5 enable
+#
+interface stack-port 1/2
+ port interface 40GE1/0/6 enable
+interface XGigabitEthernet 0/0/48	
+ mad detect mode direct	
+interface XGigabitEthernet 1/0/48	
+ mad detect mode direct	
+#	
+#M-LAG配置
+stp mode rstp
+stp v-stp enable
+stp tc-protection
+stp bpdu-protection
+#
+stp bridge-address H-H-H
+#
+ip vpn-instance DAD
+ ipv4-family
+#
+dfs-group 1
+#
+interface 10GE1/0/48
+ undo portswitch
+ ip binding vpn-instance DAD
+ ip address 1.1.1.1 30
+ m-lag unpaired-port reserved
+#
+dfs-group 1
+ priority 150
+ source ip 1.1.1.1 vpn-instance DAD peer 1.1.1.2
+ dual-active detection enhanced enable
+ #authentication-mode hmac-sha256 password L!#2019-leap
+ consistency-check enable mode loose
+#
+interface Eth-Trunk 128
+ trunkport 100GE1/0/7
+ trunkport 100GE1/0/8
+ mode lacp-static
+ peer-link 1
+ port vlan exclude 1
+#
+stp mode rstp
+stp v-stp enable
+stp tc-protection
+stp bpdu-protection
+#
+stp bridge-address H-H-H
+#
+ip vpn-instance DAD
+ ipv4-family
+#
+dfs-group 1
+#
+interface 10GE1/0/48
+ undo portswitch
+ ip binding vpn-instance DAD
+ ip address 1.1.1.2 30
+ m-lag unpaired-port reserved
+#
+dfs-group 1
+ priority 100
+ source ip 1.1.1.2 vpn-instance DAD peer 1.1.1.1
+ dual-active detection enhanced enable
+ #authentication-mode hmac-sha256 password L!#2019-leap
+ consistency-check enable mode loose
+#
+interface Eth-Trunk 128
+ trunkport 100GE1/0/7
+ trunkport 100GE1/0/8
+ mode lacp-static
+ peer-link 1
+ port vlan exclude 1
+#M-LAG双活网关配置举例
+interface vlanif 400
+ ip address 10.162.128.245 24
+ vrrp vrid 128 virtual-ip 10.162.128.254 
+ vrrp vrid 128 priority 120
+ m-lag unpaired-port reserved
+#
+interface Vlanif 200
+ ip address 10.X.X.254 24
+ mac-address 0000-5e00-0101  
+ m-lag unpaired-port reserved
+#
+interface Eth-Trunk 1
+ port link-type trunk
+ port trunk allow-pass vlan 200 400 XXX
+ mode lacp-static
+ dfs-group 1 m-lag 1
+ stp root-protection
+ #m-lag unpaired-port reserved
+设备配置
+mmi-mode enable
+sysname JH.KD.CSW-128.254
+#
+stelnet server enable
+rsa local-key-pair create
+undo telnet server enable
+undo http server enable
+undo ftp server
+#
+lldp enable
+stp enable
+stp mode rstp
+stp root primary
+stp bpdu-protection
+dhcp enable
+#
+vlan 200
+ description Office-Wifi
+vlan 290
+ description Guest-Wifi
+vlan 300
+ description Office-Wired
+vlan 390
+ description Office-Guest&Fail
+vlan 400
+ description Network Management
+vlan 401
+ description AP Management
+vlan 450
+ description BMC Management
+vlan 451
+ description Server Management
+vlan 490
+ description JK Network Management
+vlan 500
+ description Server
+vlan 540
+  description Test
+vlan 560
+  description Security
+vlan 600
+ description PD-Wifi
+vlan 700
+ description PD-Wired
+vlan 900
+ description JK-NVR
+vlan 910
+ description JK-Camera
+vlan 4000
+ description Peer-link-BGP
+vlan 4001
+ description Management-FW Connect
+vlan 4002
+ description Server-FW Connect
+vlan 4003
+ description Test-FW Connect
+vlan 4004
+ description Security-FW Connect
+vlan 4005
+ description OA-FW Connect
+vlan 4006
+ description PD-FW Connect
+vlan 4007
+ description JK-FW Connect
+vlan 4008
+ description Guest-FW Connect
+vlan 4009
+ description OTA-FW Connect
+vlan 4021
+ description Public_Management-FW Connect
+vlan 4022
+ description Public_Server-FW Connect
+vlan 4023
+ description Public_Test-FW Connect
+vlan 4024
+ description Public_Security-FW Connect
+vlan 4025
+ description Pulbic_OA-FW Connect
+vlan 4026
+ description Public_PD-FW Connect
+vlan 4027
+ description Public_JK-FW Connect
+vlan 4028
+ description Public_Guest-FW Connect
+vlan 4029
+ description Public_OTA-FW Connect
+
+aaa
+ local-aaa-user password policy administrator
+  password history record number 0
+  undo password alert original
+  password expire 0
+  quit
+ undo local-user password change-offline enable
+
+ local-user lpadmin privilege level 15
+ local-user lpadmin service-type ssh
+ local-user lpadmin password irreversible-cipher L!#switch@123
+
+ local-user show privilege level 1
+ local-user show service-type ssh
+ local-user show password irreversible-cipher Leap#show^3
+ undo local-user admin
+#
+stelnet server enable
+#ssh server acl 2098
+ssh server authentication-retries 5
+ssh authentication-type default aaa
+ssh authentication-type default all
+ssh user lpadmin
+ssh user lpadmin authentication-type password
+ssh user lpadmin service-type stelnet
+ssh user show
+ssh user show authentication-type password
+ssh user show service-type stelnet
+ssh client first-time enable
+ssh server-source -i Vlanif 400
+ssh server key-exchange dh_group14_sha256
+ssh server publickey rsa
+#
+user-interface maximum-vty 15
+user-interface vty 0 14
+ authentication-mode aaa
+ user privilege level 1
+ protocol inbound ssh
+ idle-timeout 15 0
+user-interface con 0
+ idle-timeout 15 0
+ authentication-mode password
+ set authentication password cipher LProuter@123
+#
+acl number 2098
+ description "ssh acl"
+ rule 0 permit source 10.X.Y.Z 0.0.0.255
+ rule 10 permit source 10.192.0.22 0
+ rule 15 permit source 10.192.1.74 0
+ rule 20 permit source 10.192.1.200 0
+ rule 25 permit source 10.192.1.218 0
+ rule 30 permit source 10.192.7.137 0
+#以上为固定地址，以下根据地区与现场环境自行更改添加，新增在序号中间新增即可
+ rule 100 permit source 10.193.134.196 0
+ rule 105 permit source 10.193.134.135 0
+#以下为个人电脑
+ rule 150 permit source 10.193.100.0 0.0.0.255
+ rule 155 permit source 10.192.67.124 0
+ rule 160 permit source 10.192.67.158 0
+ rule 165 permit source 10.192.200.158 0
+ rule 1000 deny
+#
+#acl number 2099
+ #description "snmp acl"
+#
+acl number 3390
+ rule 0 permit ip destination 10.X.Y.Z 0
+ rule 50 permit tcp destination 10.192.124.40 0 destination-port eq 7443
+ rule 55 permit tcp destination 10.192.124.40 0 destination-port eq 9443
+ rule 60 permit tcp destination 10.192.124.40 0 destination-port eq 443
+ rule 65 permit tcp destination 10.192.123.63 0 destination-port eq 7443
+ rule 70 permit tcp destination 10.192.123.63 0 destination-port eq 9443
+ rule 75 permit tcp destination 10.192.123.63 0 destination-port eq 443
+ rule 80 permit tcp destination 10.1.12.80 0 destination-port eq domain
+ rule 85 permit tcp destination 10.1.12.81 0 destination-port eq domain
+ rule 90 permit udp destination 10.1.12.80 0 destination-port eq dns
+ rule 95 permit udp destination 10.1.12.81 0 destination-port eq dns
+ rule 100 permit udp destination 10.193.133.2 0 destination-port eq dns
+ rule 105 permit udp destination 10.193.100.1 0 destination-port range bootps bootpc
+ rule 110 permit udp destination 10.193.102.1 0 destination-port range bootps bootpc
+ rule 115 permit udp destination 10.193.104.1 0 destination-port range bootps bootpc
+ rule 120 permit udp destination 10.193.106.1 0 destination-port range bootps bootpc
+ rule 125 permit tcp destination 10.192.124.41 0 destination-port eq 7443
+ rule 130 permit tcp destination 10.192.124.41 0 destination-port eq 9443
+ rule 135 permit tcp destination 10.192.124.41 0 destination-port eq 443
+ rule 140 permit tcp destination 10.192.123.67 0 destination-port eq 7443
+ rule 145 permit tcp destination 10.192.123.67 0 destination-port eq 9443
+ rule 150 permit tcp destination 10.192.123.67 0 destination-port eq 443
+ rule 155 permit tcp destination 100.118.28.49 0 destination-port eq 443
+ rule 160 permit tcp destination 100.118.28.45 0 destination-port eq 443
+ rule 9999 deny ip
+#
+ip vpn-instance Management
+ ipv4-family
+#
+ip vpn-instance Server
+ ipv4-family
+#
+ip vpn-instance Test
+ ipv4-family
+#
+ip vpn-instance Security
+ ipv4-family
+#
+ip vpn-instance OA
+ ipv4-family
+#
+ip vpn-instance PD
+ ipv4-family
+#
+ip vpn-instance JK
+ ipv4-family
+#
+ip vpn-instance Guest
+ ipv4-family
+#
+ip vpn-instance OTA
+ ipv4-family
+#
+#ip vpn-instance Other
+ #ipv4-family
+#
+undo interface vlanif 1
+#
+interface Vlanif 400
+ description Network Management
+ ip binding vpn-instance Management
+ ip address 10.X.X.254 24
+ m-lag ip address 10.X.X.245 24
+ mac-address 0000-5e00-0100
+#
+interface Vlanif 401
+ description AP Network Management
+ ip binding vpn-instance Management
+ ip address 10.X.X.254 24
+ m-lag ip address 10.X.X.245 24
+ mac-address 0000-5e00-0100
+ dhcp select global
+#
+interface Vlanif 390
+ description Office-WIFI
+ ip binding vpn-instance OA
+ ip address 10.X.X.254 24
+ mac-address 0000-5e00-0100
+ traffic-filter inbound acl 3390
+ dhcp select global
+#
+#其他接口配置参考华为CE配置
+ip pool vlan390
+ vpn-instance OA
+ gateway-list 10.162.136.254
+ network 10.162.136.0 mask 255.255.255.0
+ excluded-ip-address 10.162.136.200 10.162.136.253
+ lease day 0 hour 8 minute 0
+ dns-list 10.193.133.2 10.1.12.80
+ip pool vlan401
+ vpn-instance Management
+ gateway-list 10.162.129.254
+ network 10.162.129.0 mask 255.255.255.0
+ lease day 3 hour 0 minute 0
+ dns-list 10.193.133.2 10.1.12.80
+ option 138 ip-address 10.X.X.X
+#
+#其他DHCP配置参考华为CE配置
+interface Eth-Trunk 1
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 400 200
+ stp root-protection
+ mode lacp
+ dfs-group 1 m-lag 1
+ #m-lag unpaired-port reserved
+#
+interface XGigabitEthernet 0/0/1
+ eth-trunk 1
+#
+interface XGigabitEthernet 1/0/1
+ eth-trunk 1
+#
+interface Eth-Trunk 47
+ port link-type trunk
+ undo port trunk allow-pass vlan 1
+ port trunk allow-pass vlan 4001 to 4005 4022 to 4025
+ mode lacp
+#
+interface XGigabitEthernet 0/0/47
+ eth-trunk 47
+#
+interface XGigabitEthernet 1/0/47
+ eth-trunk 47
+#
+info-center source SHELL channel 4 log level informational
+info-center loghost source Vlanif 400
+info-center loghost 10.193.134.168 port 5544
+#
+clock timezone BJ add 08:00:00
+undo ntp-service server disable
+ntp-service ipv6 server disable
+ntp-service refclock-master 2
+ntp-service source-interface Vlanif 400
+ntp-service unicast-server 10.1.12.80 preempt
+ntp-service unicast-server 10.1.12.81
+#
+snmp-agent
+snmp-agent community complexity-check disable
+snmp-agent community read cipher leapmotor
+snmp-agent sys-info version v2c v3
+snmp-agent protocol source-interface Vlanif 400
+undo snmp-agent protocol source-status all-interface
+undo snmp-agent protocol source-status ipv6 all-interface
+#
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.84 description Management
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.92 description Server
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.100 description Test
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.108 description Security
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.116 description OA
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.124 description PD
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.132 description JK
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.140 description Guest
+ip route-static 10.X.X.0 255.255.X.0 172.30.X.148 description OTA
+#ip route-static 10.X.X.0 255.255.X.0 172.30.X.156 description Other
+ip route-static vpn-instance Management 0.0.0.0 0.0.0.0 172.30.X.4
+ip route-static vpn-instance Server 0.0.0.0 0.0.0.0 172.30.X.12
+ip route-static vpn-instance Test 0.0.0.0 0.0.0.0 172.30.X.20
+ip route-static vpn-instance Security 0.0.0.0 0.0.0.0 172.30.X.28
+ip route-static vpn-instance OA 0.0.0.0 0.0.0.0 172.30.X.36
+ip route-static vpn-instance PD 0.0.0.0 0.0.0.0 172.30.X.44
+ip route-static vpn-instance JK 0.0.0.0 0.0.0.0 172.30.X.52
+ip route-static vpn-instance Guest 0.0.0.0 0.0.0.0 172.30.X.60
+ip route-static vpn-instance OTA 0.0.0.0 0.0.0.0 172.30.X.68
+#ip route-static vpn-instance Other 0.0.0.0 0.0.0.0 172.30.X.76
+undo mmi-mode enable
+
+
+
+
