@@ -1,0 +1,94 @@
+华为配置
+radius-server template radius_nac
+ radius-server authentication 10.193.134.108 1812 weight 100
+ radius-server accounting 10.193.134.108 1813 weight 100
+ #radius-server authentication 10.192.123.83 1812
+ #radius-server accounting 10.192.123.83 1813
+ radius-server shared-key cipher l1KP1Cjtx3bE
+ undo radius-server user-name domain-included
+ calling-station-id mac-format unformatted uppercase
+ radius-server testuser username test1 password cipher abc@123
+ radius-server retransmit 3 timeout 2
+quit
+radius-server dead-interval 2
+radius-server dead-count 1
+aaa
+ authentication-scheme radius_nac
+ authentication-mode radius
+ authorization-scheme radius_nac
+ accounting-scheme radius_nac
+#
+ domain domain_nac
+  authentication-scheme radius_nac
+  authorization-scheme radius_nac
+  accounting-scheme radius_nac
+  radius-server radius_nac
+quit
+quit
+#
+配置认证
+dot1x timer mac-bypass-delay 3
+dot1x-access-profile name dot1x_nac
+ dot1x retry 1 
+ dot1x timer reauthenticate-period 28800
+ dot1x reauthenticate
+ dot1x unicast-trigger
+quit
+#
+mac-access-profile name mac_nac
+ mac-authen timer reauthenticate-period 28800
+ mac-authen reauthenticate
+quit
+#
+authentication-profile name nac
+ authentication mode single-terminal
+ mac-access-profile mac_nac
+ dot1x-access-profile dot1x_nac
+ access-domain domain_nac force
+ authentication dot1x-mac-bypass
+ authentication event authen-fail action authorize vlan 390
+ authentication event authen-server-down action authorize vlan 300
+ authentication event authen-server-up action re-authen
+ #authentication event pre-authen action authorize vlan 390
+
+接口配置
+interface GigabitEthernet0/0/16
+#网络连通基本配置
+ undo port-security enable
+ port link-type hybrid
+ y
+ undo port hybrid vlan 1
+ port hybrid untagged vlan 300 390
+ port hybrid pvid vlan 300
+ authentication-profile nac
+ stp edged-port enable
+#端口限制用户数也可使用port-security或mac-limit限制，优选绑定模板方案
+ #mac-limit maximum 1 action discard alarm enable
+ #port-security enable
+ #port-security aging-time 5
+ #port-security max-mac-num 1 
+
+检查命令：
+dis cu int
+display dot1x interface GigabitEthernet0/0/16      
+display mac-authen interface GigabitEthernet0/0/16 
+display access-user                               
+dis mac-address xxx
+
+undo authentication unified-mode
+测试radius服务器宕机后是否进入逃生vlan：
+ip route-static X.X.X.X 32 NULL 0
+ping X.X.X.X
+添加完黑洞路由之后再进入到端口shut/undo shut一下，然后查看端口mac是否已进入到逃生vlan
+
+验证逃生vlan完毕后，删除黑洞路由并检查到radius通信是否恢复正常：
+undo ip route-static X.X.X.X 32 NULL 0
+ping X.X.X.X
+
+
+test-aaa user-name user-password radius-template template-name [ chap | pap | accounting [ start | realtime | stop ] ]
+
+回退命令：
+接口下删除调用的认证profile：（默认未开启dot1x和mac认证功能，调用模版template即开启）
+interface range G0/0/X to G0/0/X
+ undo authentication-profile
