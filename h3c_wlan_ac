@@ -1,0 +1,4221 @@
+ version 9.1.061, Release 1415
+#
+ sysname JH3-WLAN-AC-208.11
+#
+ clock timezone BJ add 08:00:00
+ clock protocol ntp
+#
+wlan global-configuration
+ wlan tunnel-preempt enable
+ calibrate-channel self-decisive enable all
+ calibrate-power self-decisive enable all
+#
+ cloud-cluster enable
+ cloud-cluster service-cluster mac-address persistent always
+ cloud-cluster service-cluster mad domain 111
+#
+ dot1x
+ dot1x authentication-method eap
+ dot1x retry 10
+ dot1x timer reauth-period 7200
+ dot1x timer supp-timeout 2
+ dot1x timer tx-period 2
+#
+ mac-authentication
+#
+ wlan tcp mss 1360
+#
+ ip unreachables enable
+ ip ttl-expires enable
+#
+ lldp global enable
+#
+ password-recovery enable
+#
+vlan 1
+#
+vlan 400
+#
+cloud-cluster member 1
+ member-ip 2.2.2.1 30
+ join-cluster ip 2.2.2.1
+ cluster-link control bind interface GigabitEthernet1/0/7
+ cluster-link data bind interface GigabitEthernet1/0/15
+ cluster-link data bind interface GigabitEthernet1/0/16
+#
+cloud-cluster member 2
+ member-ip 2.2.2.2 30
+ join-cluster ip 2.2.2.1
+ cluster-link control bind interface GigabitEthernet2/0/7
+ cluster-link data bind interface GigabitEthernet2/0/15
+ cluster-link data bind interface GigabitEthernet2/0/16
+#
+wlan service-template leapmotor-guest
+ ssid Leapmotor-Guest
+ client forwarding-location ap
+ client-security authentication-mode mac
+ client-security ignore-authentication
+ mac-authentication domain domain_guest
+ bss transition-management enable
+ portal enable method direct
+ portal domain domain_guest
+ portal bas-ip 10.155.32.245
+ portal apply web-server Guest
+ portal apply mac-trigger-server Guest
+ service-template enable
+#
+wlan service-template leapmotor-office
+ ssid Leapmotor-Office
+ client forwarding-location ap
+ akm mode dot1x
+ cipher-suite ccmp
+ security-ie rsn
+ client-security authentication-mode dot1x
+ dot1x domain domain_mdm
+ ft enable
+ bss transition-management enable
+ service-template enable
+#
+wlan service-template leapmotor-pd
+ ssid Leapmotor-PD
+ client forwarding-location ap
+ akm mode psk
+ preshared-key pass-phrase cipher $c$3$Q4te+kqvmUwpPFchnj1jnE6FbrHvMkW0gtI/oo3AoY0=
+ cipher-suite ccmp
+ security-ie rsn
+ client-security authentication-mode mac
+ mac-authentication domain domain_mac
+ ft enable
+ bss transition-management enable
+ service-template enable
+#
+interface Bridge-Aggregation1
+ description link_to_CSW_1/2/0/13
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 400
+ link-aggregation mode dynamic
+#
+interface NULL0
+#
+interface Vlan-interface400
+ ip address 10.155.32.245 255.255.255.0
+#
+interface GigabitEthernet1/0/1
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/2
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/3
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/4
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/5
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/6
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/8
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/9
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/10
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/11
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/12
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/13
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 400
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/14
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 400
+ port link-aggregation group 1
+#
+interface GigabitEthernet1/0/17
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/18
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/1
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/2
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/3
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/4
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/5
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/6
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/8
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/9
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/10
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/11
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/12
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/13
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 400
+ port link-aggregation group 1
+#
+interface GigabitEthernet2/0/14
+ port link-mode bridge
+ port link-type trunk
+ undo port trunk permit vlan 1
+ port trunk permit vlan 400
+ port link-aggregation group 1
+#
+interface GigabitEthernet2/0/17
+ port link-mode bridge
+#
+interface GigabitEthernet2/0/18
+ port link-mode bridge
+#
+interface GigabitEthernet1/0/7
+#
+interface GigabitEthernet1/0/15
+#
+interface GigabitEthernet1/0/16
+#
+interface GigabitEthernet2/0/7
+#
+interface GigabitEthernet2/0/15
+#
+interface GigabitEthernet2/0/16
+#
+interface M-GigabitEthernet0/0/0
+ ip address 10.155.208.11 255.255.254.0
+#
+ scheduler logfile size 16
+#
+line class aux
+ user-role network-admin
+#
+line class vty
+ user-role network-operator
+#
+line aux 0 1
+ user-role network-admin
+#
+line vty 0 14
+ authentication-mode scheme
+ user-role level-1
+ user-role network-operator
+ protocol inbound ssh
+ idle-timeout 15 0
+#
+line vty 15 31
+ authentication-mode scheme
+ user-role network-operator
+#
+line vty 32 63
+ user-role network-operator
+#
+ ip route-static 0.0.0.0 0 10.155.32.254
+ ip route-static 10.155.0.0 16 10.155.32.254 description CAPWAP
+ ip route-static 10.192.123.83 32 10.155.32.254
+ ip route-static 10.193.100.0 24 10.155.209.254
+ ip route-static 10.193.128.118 32 10.155.32.254
+ ip route-static 10.193.134.108 32 10.155.32.254
+ ip route-static 10.193.134.196 32 10.155.209.254
+#
+ undo info-center logfile enable
+ info-center loghost source Vlan-interface400
+ info-center loghost 10.193.134.168 port 5544
+#
+ snmp-agent
+ snmp-agent local-engineid 800063A280ECCD4CC3F7D000000001
+ snmp-agent community read leapmotor
+ snmp-agent sys-info version v2c v3
+#
+ ssh server enable
+#
+ ntp-service enable
+ ntp-service source Vlan-interface400
+ ntp-service unicast-server 10.155.32.254
+#
+ password-control login-attempt 3 exceed lock-time 5
+ undo password-control complexity user-name check
+#
+ radius session-control enable
+#
+radius scheme radius_guest
+ primary authentication 10.193.134.108 key cipher $c$3$enbXc5F6VgQ53Gh68aTIOgdLW6IDCsHW2Jt5yZkfkw==
+ primary accounting 10.193.134.108 key cipher $c$3$WyArX/k57hHN0xqGqv3yqGggD4yXuCs3bfOcnt+78A==
+ user-name-format without-domain
+ nas-ip 10.155.32.245
+#
+radius scheme radius_mac
+ primary authentication 10.193.128.118 key cipher $c$3$1an6bY5DztsbE7bdBw56d/Lm+ZzNdX+Af36DiQKe
+ primary accounting 10.193.128.118 key cipher $c$3$VLFKsli0bBjkX+2xF9X4IURU3ZpBIH5gpuZ/qBje
+ retry 2
+ user-name-format without-domain
+ nas-ip 10.155.32.245
+#
+radius scheme radius_mdm
+ primary authentication 10.193.134.108 key cipher $c$3$Zoq1pQhYmNCuNowUlkYjBlsdqWpOyKOmWK+wquBE/Q==
+ primary accounting 10.193.134.108 key cipher $c$3$yH1vCnNAwUbeA4cj7QGNRnm6Um/DfwChB+etcjsK9g==
+ secondary authentication 10.192.123.83 key cipher $c$3$Eud6UczXSHixDv4frP5F4pRzCFdDMfcPTcOPlBu/AA==
+ secondary accounting 10.192.123.83 key cipher $c$3$u/N4KHVk6JbaH5FIL0eHATuLxBVEhdpuDOb5sBcMeQ==
+ retry 2
+ nas-ip 10.155.32.245
+#
+radius dynamic-author server
+ client ip 10.193.134.108 key cipher $c$3$I1PW4KmUhSF/HCj0ONn6OqxPps+bQj7uQz9UNPbp1Q==
+#
+domain name domain_guest
+ authentication lan-access radius-scheme radius_guest
+ authorization lan-access radius-scheme radius_guest
+ accounting lan-access radius-scheme radius_guest
+ authentication portal radius-scheme radius_guest
+ authorization portal radius-scheme radius_guest
+ accounting portal radius-scheme radius_guest
+#
+domain name domain_mac
+ authentication lan-access radius-scheme radius_mac none
+ authorization lan-access radius-scheme radius_mac none
+#
+domain name domain_mdm
+ authentication lan-access radius-scheme radius_mdm none
+ authorization lan-access radius-scheme radius_mdm none
+#
+domain name system
+#
+ domain default enable system
+#
+role name level-0
+ description Predefined level-0 role
+#
+role name level-1
+ description Predefined level-1 role
+#
+role name level-2
+ description Predefined level-2 role
+#
+role name level-3
+ description Predefined level-3 role
+#
+role name level-4
+ description Predefined level-4 role
+#
+role name level-5
+ description Predefined level-5 role
+#
+role name level-6
+ description Predefined level-6 role
+#
+role name level-7
+ description Predefined level-7 role
+#
+role name level-8
+ description Predefined level-8 role
+#
+role name level-9
+ description Predefined level-9 role
+#
+role name level-10
+ description Predefined level-10 role
+#
+role name level-11
+ description Predefined level-11 role
+#
+role name level-12
+ description Predefined level-12 role
+#
+role name level-13
+ description Predefined level-13 role
+#
+role name level-14
+ description Predefined level-14 role
+#
+user-group system
+#
+local-user 25152 class manage
+ password hash $h$6$8B7Gw4YXXReYiElN$jh9UeTVt52iVtQqEJ+z/KDh056DLPq/SVWZ4cFQHgr3atWYFKOI+cQQia5Wy49TDSyBb1gZVA5GzsrkX/vozJg==
+ service-type telnet https ssh terminal
+ authorization-attribute work-directory slot1#flash:
+ authorization-attribute user-role network-admin
+ authorization-attribute user-role network-operator
+#
+local-user admin class manage
+ password hash $h$6$eKT0DXTO/93p2kA0$xvCoMLO9rWsHzd9zFDsDBtCXAHfGkgXA1S8U86h2KTXNeU/TYasdUk31MbtEGPBefGo0z6spFkuhzNPBq3XnUQ==
+ service-type http https ssh
+ authorization-attribute user-role network-admin
+#
+local-user lpadmin class manage
+ password hash $h$6$FwimHd2u+mL74ci8$Hnt8Y8y42JOrGdpVA7aMFG6mVScJVkdIiGh72ghzQgQfe2lkXSPlVEgbEov5hNFr4T2Ufn1ZnU+YQ9AusATkuQ==
+ service-type https ssh
+ authorization-attribute work-directory slot1#flash:
+ authorization-attribute user-role level-15
+ authorization-attribute user-role network-admin
+ authorization-attribute user-role network-operator
+#
+ portal free-rule 1 destination ip any tcp 53
+ portal free-rule 2 destination ip any udp 53
+#
+portal web-server Guest
+ url http://10.193.134.108:8887/ui/portal.html
+ url-parameter nasip value 10.155.32.245
+ url-parameter url original-url
+ url-parameter userip source-address
+ url-parameter usermac source-mac
+#
+portal server Guest
+ ip 10.193.134.108 key cipher $c$3$KM2Aygefg8EflZ0Cqf/cSZfc+NYOWPeY+jDIN92JXQ==
+#
+ ip http enable
+ ip https enable
+#
+portal mac-trigger-server Guest
+ ip 10.193.134.108 key cipher $c$3$57qHVxKOz1UTwYASw8jd9mwaSL2TTW16sk+JcturYw==
+ binding-retry 1
+ aaa-fail nobinding enable
+#
+ wlan client-backup hot-backup enable
+#
+ wlan auto-ap enable
+ wlan auto-persistent enable
+ wlan ap-backup hot-backup enable
+#
+wlan ap-group default-group
+ vlan 1
+ radio 2.4g
+ radio 5g
+ radio 6g
+#
+wlan ap-group default-ponapgroup type pon
+ vlan 1
+#
+wlan ap-group jh3-cy
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 6c87-20ea-9d80
+ ap 6c87-20ea-9e20
+ ap 6c87-20ea-9ee0
+ ap 6c87-20ea-a0c0
+ ap 6c87-20ea-a460
+ ap 6c87-20ea-ace0
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-hz
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 04a9-59f4-7380
+ ap 04a9-59f4-7e20
+ ap 04a9-59f4-a500
+ ap 04a9-59f4-a940
+ ap 1484-771d-b080
+ ap 1484-7722-4920
+ ap 1484-7722-6780
+ ap 1484-7722-6e20
+ ap 1484-7722-7000
+ ap 1484-7722-86e0
+ ap 1484-7722-8be0
+ ap 1484-7722-92c0
+ ap 1484-7722-9440
+ ap 1484-7722-94a0
+ ap 1484-7722-9780
+ ap 1484-7722-9f00
+ ap 1484-7722-9fe0
+ ap 1484-7722-a120
+ ap 1484-7722-a1a0
+ ap 1484-7722-a200
+ ap 1484-7722-bc80
+ ap 1484-7722-bee0
+ ap 1484-7722-c720
+ ap 1496-2d03-ad40
+ ap 1496-2d03-c280
+ ap 1496-2d03-c780
+ ap 1496-2d03-c840
+ ap 1496-2d03-c880
+ ap 1496-2d03-c8a0
+ ap 1496-2d04-1460
+ ap 1496-2d04-1500
+ ap 1496-2d04-1bc0
+ ap 1496-2d04-1c40
+ ap 1496-2d04-1da0
+ ap 6c87-20e9-ecc0
+ ap 6c87-20e9-ed20
+ ap 6c87-20e9-ee20
+ ap 6c87-20e9-f040
+ ap 6c87-20e9-fce0
+ ap 6c87-20e9-fe00
+ ap 6c87-20ea-3120
+ ap 6c87-20ea-35c0
+ ap 6c87-20ea-3780
+ ap 6c87-20ea-91a0
+ ap 6c87-20ea-9760
+ ap 6c87-20ea-9d40
+ ap 7c7a-3c2c-a240
+ ap 94a7-48fe-7560
+ ap 94a7-48fe-7be0
+ ap JiFang-AP
+ ap b4d7-dbc0-41e0
+ ap b4d7-dbc0-4220
+ ap b4d7-dbc0-42a0
+ ap b4d7-dbc0-43a0
+ ap b4d7-dbc0-43e0
+ ap b4d7-dbc0-4560
+ ap b4d7-dbc0-4580
+ ap b4d7-dbc0-4600
+ ap b4d7-dbc0-4660
+ ap b4d7-dbc0-4700
+ ap b4d7-dbc0-47c0
+ ap b4d7-dbc0-4980
+ ap b4d7-dbc0-4c80
+ ap b4d7-dbc0-4ce0
+ ap b4d7-dbc0-4d20
+ ap b4d7-dbc0-4da0
+ ap b4d7-dbc0-4e60
+ ap b4d7-dbc0-4fe0
+ ap b4d7-dbc0-50a0
+ ap b4d7-dbc0-51c0
+ ap b4d7-dbc0-52c0
+ ap b4d7-dbc0-55e0
+ ap b4d7-dbc0-56a0
+ ap b4d7-dbc0-5740
+ ap e878-ee53-cd40
+ ap e878-ee53-d120
+ ap e878-ee53-d860
+ ap e878-ee53-da20
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6520S-E
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+ ap-model WA6522H-LI
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-hzwl
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 1484-7710-ba90
+ ap 1484-7710-bdc0
+ ap 1484-7710-bee0
+ ap 1484-7710-c300
+ ap 1484-7710-c6c0
+ ap 1484-7710-c6f0
+ ap 1484-7710-c750
+ ap 1484-7710-c780
+ ap 1484-7710-c960
+ ap 1484-7711-d7f0
+ ap 1484-7711-e1e0
+ ap 1484-7711-f4a0
+ ap 1484-7722-4440
+ ap 1484-7722-7f00
+ ap 1484-7722-8ac0
+ ap 1484-7722-8c40
+ ap 1484-7722-9720
+ ap 1484-7722-af60
+ ap 1484-7722-b820
+ ap 1484-7722-b980
+ ap 6c87-20d7-37e0
+ ap 6c87-20d7-3880
+ ap 6c87-20d7-3a60
+ ap 6c87-20ea-0c00
+ ap 6c87-20ea-9b40
+ ap 6c87-20ea-b7c0
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-jj
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 6c87-20d7-2be0
+ ap 6c87-20d7-ff60
+ ap 6c87-20d8-0c80
+ ap 6c87-20e9-f9c0
+ ap 6c87-20e9-ffe0
+ ap 6c87-20ea-0900
+ ap 6c87-20ea-31c0
+ ap 6c87-20ea-9240
+ ap 6c87-20ea-9800
+ ap 6c87-20ea-9be0
+ ap 6c87-20ea-9ca0
+ ap 6c87-20ea-9e40
+ ap 6c87-20ea-a1e0
+ ap 6c87-20ea-a860
+ ap 6c87-20ea-b6e0
+ ap 7449-d2b5-c880
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-jx
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 6c87-20d7-21a0
+ ap 6c87-20d7-26c0
+ ap 6c87-20d7-2d20
+ ap 6c87-20d7-2dc0
+ ap 6c87-20d7-3540
+ ap 6c87-20d7-4520
+ ap 6c87-20d7-e3e0
+ ap 6c87-20d8-0020
+ ap 6c87-20d8-0dc0
+ ap 6c87-20d8-0e20
+ ap 6c87-20e9-f2a0
+ ap 6c87-20e9-fb40
+ ap 6c87-20e9-fcc0
+ ap 6c87-20ea-1060
+ ap 6c87-20ea-1500
+ ap 6c87-20ea-3400
+ ap 6c87-20ea-36a0
+ ap 6c87-20ea-3f60
+ ap 6c87-20ea-9020
+ ap 6c87-20ea-9d00
+ ap 6c87-20ea-9f80
+ ap 6c87-20ea-a180
+ ap 6c87-20ea-e0a0
+ ap 6c87-20ea-eb20
+ ap 7449-d2b5-aa00
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-office
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 1090-faa0-2980
+ ap 1090-faa0-4ac0
+ ap 1090-faa0-4ba0
+ ap 34dc-99c4-25b0
+ ap 34dc-99c4-4370
+ ap 34dc-99c4-4960
+ ap 34dc-99c4-4ff0
+ ap 34dc-99c4-5d70
+ ap 34dc-99c4-5db0
+ ap 34dc-99c4-7590
+ ap 34dc-99c4-9590
+ ap 8c94-6a09-c750
+ ap 8c94-6a09-cc60
+ ap 8c94-6a09-d430
+ ap 8c94-6a0b-11d0
+ ap 8c94-6a0b-1600
+ ap 8c94-6a0b-1f50
+ ap 8c94-6a0b-1f90
+ ap 8c94-6a0b-2020
+ ap 8c94-6a0b-2580
+ ap 8c94-6a0b-2640
+ ap 8c94-6a0b-26c0
+ ap 8c94-6a0b-2870
+ ap 8c94-6af4-b3f0
+ ap 8c94-6af4-b520
+ ap 8c94-6af4-b5a0
+ ap 8c94-6af4-faf0
+ ap 8c94-6af4-fbf0
+ ap 8c94-6af5-0110
+ ap 8c94-6af5-40a0
+ ap 8c94-6af5-45b0
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6520S-E
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+ ap-model WA6522H-LI
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   service-template leapmotor-guest vlan 290
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan ap-group jh3-zz
+ remote-configuration enable
+ vlan 1
+ vlan 200
+ vlan 290
+ vlan 600
+ radio 2.4g
+ radio 5g
+ radio 6g
+ ap 1484-7722-4580
+ ap 1484-7722-70e0
+ ap 1484-7722-8c80
+ ap 1484-7722-9e40
+ ap 6c87-20d7-2520
+ ap 6c87-20d7-2960
+ ap 6c87-20d7-29e0
+ ap 6c87-20d7-2b40
+ ap 6c87-20d7-2bc0
+ ap 6c87-20d7-2ee0
+ ap 6c87-20d7-2fe0
+ ap 6c87-20d7-30a0
+ ap 6c87-20d7-3240
+ ap 6c87-20d7-3420
+ ap 6c87-20d7-3c00
+ ap 6c87-20d7-6c00
+ ap 6c87-20d7-7560
+ ap 6c87-20d7-7880
+ ap 6c87-20d7-7b60
+ ap 6c87-20d7-9da0
+ ap 6c87-20d7-9e80
+ ap 6c87-20d7-9ec0
+ ap 6c87-20d7-bbe0
+ ap 6c87-20d7-e740
+ ap 6c87-20d8-0040
+ ap 6c87-20d8-0200
+ ap 6c87-20e9-f160
+ ap 6c87-20e9-f1c0
+ ap 6c87-20e9-f4c0
+ ap 6c87-20e9-f6c0
+ ap 6c87-20e9-f720
+ ap 6c87-20e9-f800
+ ap 6c87-20e9-f840
+ ap 6c87-20e9-f8c0
+ ap 6c87-20e9-f920
+ ap 6c87-20e9-f9a0
+ ap 6c87-20e9-fa20
+ ap 6c87-20e9-fc20
+ ap 6c87-20ea-0220
+ ap 6c87-20ea-0280
+ ap 6c87-20ea-0d80
+ ap 6c87-20ea-1760
+ ap 6c87-20ea-30e0
+ ap 6c87-20ea-3180
+ ap 6c87-20ea-8de0
+ ap 6c87-20ea-8e80
+ ap 6c87-20ea-8ec0
+ ap 6c87-20ea-8f80
+ ap 6c87-20ea-9000
+ ap 6c87-20ea-90a0
+ ap 6c87-20ea-92a0
+ ap 6c87-20ea-9540
+ ap 6c87-20ea-9680
+ ap 6c87-20ea-99e0
+ ap 6c87-20ea-9ac0
+ ap 6c87-20ea-9b20
+ ap 6c87-20ea-9c80
+ ap 6c87-20ea-a0e0
+ ap 6c87-20ea-a220
+ ap 6c87-20ea-a280
+ ap 6c87-20ea-a2a0
+ ap 6c87-20ea-a4e0
+ ap 6c87-20ea-a560
+ ap 6c87-20ea-a580
+ ap 6c87-20ea-a5c0
+ ap 6c87-20ea-a620
+ ap 6c87-20ea-a660
+ ap 6c87-20ea-a780
+ ap 6c87-20ea-a7a0
+ ap 6c87-20ea-a800
+ ap 6c87-20ea-a840
+ ap 6c87-20ea-a880
+ ap 6c87-20ea-a920
+ ap 6c87-20ea-a940
+ ap 6c87-20ea-a9c0
+ ap 6c87-20ea-a9e0
+ ap 6c87-20ea-aa20
+ ap 6c87-20ea-aa60
+ ap 6c87-20ea-aa80
+ ap 6c87-20ea-aaa0
+ ap 6c87-20ea-aac0
+ ap 6c87-20ea-ab00
+ ap 6c87-20ea-ab20
+ ap 6c87-20ea-aba0
+ ap 6c87-20ea-ac40
+ ap 6c87-20ea-ac60
+ ap 6c87-20ea-ad00
+ ap 6c87-20ea-ad40
+ ap 6c87-20ea-adc0
+ ap 6c87-20ea-ae20
+ ap 6c87-20ea-af00
+ ap 6c87-20ea-af20
+ ap 6c87-20ea-b040
+ ap 6c87-20ea-b0e0
+ ap 6c87-20ea-b160
+ ap 6c87-20ea-b2a0
+ ap 6c87-20ea-b3a0
+ ap 6c87-20ea-b520
+ ap 6c87-20ea-b900
+ ap 6c87-20ea-b960
+ ap 6c87-20ea-b9e0
+ ap 6c87-20ea-ba80
+ ap 6c87-20ea-bb00
+ ap 6c87-20ea-bb80
+ ap 6c87-20ea-bcc0
+ ap 6c87-20ea-bce0
+ ap 6c87-20ea-bd80
+ ap 6c87-20ea-bf40
+ ap 6c87-20ea-c1e0
+ ap 6c87-20ea-c220
+ ap 6c87-20ea-c440
+ ap 6c87-20ea-c620
+ ap 6c87-20ea-c8e0
+ ap 6c87-20ea-ca40
+ ap 6c87-20ea-db40
+ ap 6c87-20ea-e020
+ ap 6c87-20ea-e100
+ ap b4d7-dbc0-4480
+ ap b4d7-dbc0-45e0
+ ap b4d7-dbc0-4a40
+ ap-model WA6520
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6530
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 20
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   radio enable
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 3
+   max-power 20
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   radio enable
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  smartrate-ethernet 1
+ ap-model WA6620X
+  map-configuration flash:/apcfg.txt
+  radio 1
+   max-power 24
+   rate mandatory 24
+   rate supported 36 48 54
+   rate disabled 6 9 12 18
+   mimo 2x2
+   channel band-width 20
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select blacklist 52 56 60 64
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  radio 2
+   max-power 27
+   rate mandatory 12
+   rate supported 18 24 36 48 54
+   rate disabled 1 2 5.5 6 9 11
+   mimo 2x2
+   su-txbf enable
+   dl-ofdma enable
+   bss-color enable
+   channel auto-select whitelist 1 6 11
+   option tpc enable
+   sacp anti-sticky enable rssi 30
+   service-template leapmotor-office vlan 200
+   sacp roam-optimize bss-candidate-list enable interval 5
+  gigabitethernet 1
+   port link-type trunk
+   port trunk permit vlan all
+  gigabitethernet 2
+  gigabitethernet 3
+#
+wlan virtual-ap-group default-virtualapgroup
+#
+wlan ap 04a9-59f4-7380 model WA6620X
+ serial-id 219801A2F58238E0005R
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 04a9-59f4-7e20 model WA6620X
+ serial-id 219801A2F58238E0008H
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 04a9-59f4-a500 model WA6620X
+ serial-id 219801A2F58238E000LJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 04a9-59f4-a940 model WA6620X
+ serial-id 219801A2F58238E000MM
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1090-faa0-2980 model WA6530-LI
+ serial-id 219801A2VX8243E001QH
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1090-faa0-4ac0 model WA6530-LI
+ serial-id 219801A2VX8243E00202
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1090-faa0-4ba0 model WA6530-LI
+ serial-id 219801A2VX8243E00209
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7710-ba90 model WA6530
+ serial-id 219801A2VY8233E0030P
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-bdc0 model WA6530
+ serial-id 219801A2VY8233E00317
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-bee0 model WA6530
+ serial-id 219801A2VY8233E0031F
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c300 model WA6530
+ serial-id 219801A2VY8233E00324
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c750 model WA6530
+ serial-id 219801A2VY8233E0032W
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c780 model WA6530
+ serial-id 219801A2VY8233E0032X
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c960 model WA6530
+ serial-id 219801A2VY8233E00337
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c6c0 model WA6530
+ serial-id 219801A2VY8233E0032S
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7710-c6f0 model WA6530
+ serial-id 219801A2VY8233E0032T
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7711-d7f0 model WA6530
+ serial-id 219801A2VY8233E004LS
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7711-e1e0 model WA6530
+ serial-id 219801A2VY8233E004NH
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-7711-f4a0 model WA6530
+ serial-id 219801A2VY8233E004RQ
+ vlan 1
+ radio 1
+ radio 2
+ radio 3
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 1484-771d-b080 model WA6620X
+ serial-id 219801A2F58233E00011
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-4440 model WA6620X
+ serial-id 219801A2F58233E000B6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-4580 model WA6620X
+ serial-id 219801A2F58233E000BJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-4920 model WA6620X
+ serial-id 219801A2F58233E000CG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-6780 model WA6620X
+ serial-id 219801A2F58233E000M9
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-7000 model WA6620X
+ serial-id 219801A2F58233E000PH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9440 model WA6620X
+ serial-id 219801A2F58233E000ZV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9720 model WA6620X
+ serial-id 219801A2F58233E0010L
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9780 model WA6620X
+ serial-id 219801A2F58233E0010P
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-6e20 model WA6620X
+ serial-id 219801A2F58233E000P0
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-70e0 model WA6620X
+ serial-id 219801A2F58233E000PQ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-7f00 model WA6620X
+ serial-id 219801A2F58233E000TC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-86e0 model WA6620X
+ serial-id 219801A2F58233E000WD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-8ac0 model WA6620X
+ serial-id 219801A2F58233E000XD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-8be0 model WA6620X
+ serial-id 219801A2F58233E000XP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-8c40 model WA6620X
+ serial-id 219801A2F58233E000XS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-8c80 model WA6620X
+ serial-id 219801A2F58233E000XV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-92c0 model WA6620X
+ serial-id 219801A2F58233E000ZG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-94a0 model WA6620X
+ serial-id 219801A2F58233E000ZY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9e40 model WA6620X
+ serial-id 219801A2F58233E0012F
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9f00 model WA6620X
+ serial-id 219801A2F58233E0012M
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-9fe0 model WA6620X
+ serial-id 219801A2F58233E0012V
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-a120 model WA6620X
+ serial-id 219801A2F58233E00135
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-a200 model WA6620X
+ serial-id 219801A2F58233E0013D
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-a1a0 model WA6620X
+ serial-id 219801A2F58233E00139
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-af60 model WA6620X
+ serial-id 219801A2F58233E0016V
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-b820 model WA6620X
+ serial-id 219801A2F58233E00193
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-b980 model WA6620X
+ serial-id 219801A2F58233E0019G
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-bc80 model WA6620X
+ serial-id 219801A2F58233E001B7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-bee0 model WA6620X
+ serial-id 219801A2F58233E001BV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1484-7722-c720 model WA6620X
+ serial-id 219801A2F58233E001DZ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-ad40 model WA6620X
+ serial-id 219801A2F58234E0022B
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-c280 model WA6620X
+ serial-id 219801A2F58234E0027T
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-c780 model WA6620X
+ serial-id 219801A2F58234E00293
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-c840 model WA6620X
+ serial-id 219801A2F58234E00299
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-c880 model WA6620X
+ serial-id 219801A2F58234E0029C
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d03-c8a0 model WA6620X
+ serial-id 219801A2F58234E0029D
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d04-1460 model WA6620X
+ serial-id 219801A2F58234E002XY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d04-1500 model WA6620X
+ serial-id 219801A2F58234E002Y3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d04-1bc0 model WA6620X
+ serial-id 219801A2F58234E002ZV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 1496-2d04-1c40 model WA6620X
+ serial-id 219801A2F58234E002ZZ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 34dc-99c4-4370 model WA6520S-E
+ serial-id 219801A3PGP2360003QP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-4960 model WA6520S-E
+ serial-id 219801A3PGP2360003TR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-7590 model WA6520S-E
+ serial-id 219801A3PGP2360004KK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-9590 model WA6520S-E
+ serial-id 219801A3PGP236000532
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-25b0 model WA6520S-E
+ serial-id 219801A3PGP23600037B
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-4ff0 model WA6520S-E
+ serial-id 219801A3PGP2360003Y4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-5d70 model WA6520S-E
+ serial-id 219801A3PGP236000453
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 34dc-99c4-5db0 model WA6520S-E
+ serial-id 219801A3PGP236000457
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 6c87-20d7-2520 model WA6520
+ serial-id 219801A4HF823BP0038K
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2960 model WA6520
+ serial-id 219801A4HF823BP0039N
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3240 model WA6520
+ serial-id 219801A4HF823BP003CY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3420 model WA6520
+ serial-id 219801A4HF823BP003DF
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3540 model WA6520
+ serial-id 219801A4HF823BP003DQ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3880 model WA6520
+ serial-id 219801A4HF823BP003FK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-4520 model WA6520
+ serial-id 219801A4HF823BP003JT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-7560 model WA6520
+ serial-id 219801A4HF823BP003Y8
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-21a0 model WA6520
+ serial-id 219801A4HF823BP0037N
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-26c0 model WA6520
+ serial-id 219801A4HF823BP0038Z
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2b40 model WA6520
+ serial-id 219801A4HF823BP003B4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2bc0 model WA6520
+ serial-id 219801A4HF823BP003B8
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2be0 model WA6520
+ serial-id 219801A4HF823BP003B9
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2d20 model WA6520
+ serial-id 219801A4HF823BP003BM
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2dc0 model WA6520
+ serial-id 219801A4HF823BP003BS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-2ee0 model WA6520
+ serial-id 219801A4HF823BP003C2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-30a0 model WA6520
+ serial-id 219801A4HF823BP003CJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-37e0 model WA6520
+ serial-id 219801A4HF823BP003FD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3a60 model WA6520
+ serial-id 219801A4HF823BP003G1
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-3c00 model WA6520
+ serial-id 219801A4HF823BP003GG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-6c00 model WA6520
+ serial-id 219801A4HF823BP003VV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-7b60 model WA6520
+ serial-id 219801A4HF823BP003ZT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-9da0 model WA6520
+ serial-id 219801A4HF823BP0048N
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-9e80 model WA6520
+ serial-id 219801A4HF823BP0048W
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-9ec0 model WA6520
+ serial-id 219801A4HF823BP0048Y
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-bbe0 model WA6520
+ serial-id 219801A4HF823BP004JG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-e3e0 model WA6520
+ serial-id 219801A4HF823BP004VS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d7-ff60 model WA6520
+ serial-id 219801A4HF823BP0052W
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d8-0020 model WA6520
+ serial-id 219801A4HF823BP00532
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d8-0040 model WA6520
+ serial-id 219801A4HF823BP00533
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d8-0200 model WA6520
+ serial-id 219801A4HF823BP0053K
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d8-0c80 model WA6520
+ serial-id 219801A4HF823BP00568
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20d8-0dc0 model WA6520
+ serial-id 219801A4HF823BP0056L
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-ecc0 model WA6520
+ serial-id 219801A4HF823CP0011R
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-ed20 model WA6520
+ serial-id 219801A4HF823CP0011V
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-ee20 model WA6520
+ serial-id 219801A4HF823CP00123
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f040 model WA6520
+ serial-id 219801A4HF823CP0012N
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f160 model WA6520
+ serial-id 219801A4HF823CP0012Y
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f720 model WA6520
+ serial-id 219801A4HF823CP0014F
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f800 model WA6520
+ serial-id 219801A4HF823CP0014N
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f840 model WA6520
+ serial-id 219801A4HF823CP0014Q
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f920 model WA6520
+ serial-id 219801A4HF823CP0014Y
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f1c0 model WA6520
+ serial-id 219801A4HF823CP00131
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f2a0 model WA6520
+ serial-id 219801A4HF823CP00138
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f4c0 model WA6520
+ serial-id 219801A4HF823CP0013T
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f6c0 model WA6520
+ serial-id 219801A4HF823CP0014B
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f8c0 model WA6520
+ serial-id 219801A4HF823CP0014V
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f9a0 model WA6520
+ serial-id 219801A4HF823CP00152
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-f9c0 model WA6520
+ serial-id 219801A4HF823CP00153
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fa20 model WA6520
+ serial-id 219801A4HF823CP00156
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fb40 model WA6520
+ serial-id 219801A4HF823CP0015H
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fc20 model WA6520
+ serial-id 219801A4HF823CP0015Q
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fcc0 model WA6520
+ serial-id 219801A4HF823CP0015W
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fce0 model WA6520
+ serial-id 219801A4HF823CP0015X
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-fe00 model WA6520
+ serial-id 219801A4HF823CP00166
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20e9-ffe0 model WA6520
+ serial-id 219801A4HF823CP0016P
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-0220 model WA6520
+ serial-id 219801A4HF823CP00178
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-0280 model WA6520
+ serial-id 219801A4HF823CP0017C
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-0900 model WA6520
+ serial-id 219801A4HF823CP00191
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-1060 model WA6520
+ serial-id 219801A4HF823CP001BY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-1500 model WA6520
+ serial-id 219801A4HF823CP001D4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-1760 model WA6520
+ serial-id 219801A4HF823CP001DR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-3120 model WA6520
+ serial-id 219801A4HF823CP001MD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-3180 model WA6520
+ serial-id 219801A4HF823CP001MH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-3400 model WA6520
+ serial-id 219801A4HF823CP001N4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-3780 model WA6520
+ serial-id 219801A4HF823CP001P1
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9000 model WA6520
+ serial-id 219801A4HF823CP002DW
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9020 model WA6520
+ serial-id 219801A4HF823CP002DX
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9240 model WA6520
+ serial-id 219801A4HF823CP002FG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9540 model WA6520
+ serial-id 219801A4HF823CP002G7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9680 model WA6520
+ serial-id 219801A4HF823CP002GK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9760 model WA6520
+ serial-id 219801A4HF823CP002GS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9800 model WA6520
+ serial-id 219801A4HF823CP002GY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-0c00 model WA6520
+ serial-id 219801A4HF823CP0019T
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-0d80 model WA6520
+ serial-id 219801A4HF823CP001B6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-30e0 model WA6520
+ serial-id 219801A4HF823CP001MB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-31c0 model WA6520
+ serial-id 219801A4HF823CP001MK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-35c0 model WA6520
+ serial-id 219801A4HF823CP001NL
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-36a0 model WA6520
+ serial-id 219801A4HF823CP001NT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-3f60 model WA6520
+ serial-id 219801A4HF823CP001R2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-8de0 model WA6520
+ serial-id 219801A4HF823CP002DB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-8ec0 model WA6520
+ serial-id 219801A4HF823CP002DK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-8f80 model WA6520
+ serial-id 219801A4HF823CP002DR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-90a0 model WA6520
+ serial-id 219801A4HF823CP002F1
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-91a0 model WA6520
+ serial-id 219801A4HF823CP002F9
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-92a0 model WA6520
+ serial-id 219801A4HF823CP002FK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-99e0 model WA6520
+ serial-id 219801A4HF823CP002HF
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9ac0 model WA6520
+ serial-id 219801A4HF823CP002HN
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9b20 model WA6520
+ serial-id 219801A4HF823CP002HR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9b40 model WA6520
+ serial-id 219801A4HF823CP002HS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9be0 model WA6520
+ serial-id 219801A4HF823CP002HY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9c80 model WA6520
+ serial-id 219801A4HF823CP002J3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9ca0 model WA6520
+ serial-id 219801A4HF823CP002J4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9d00 model WA6520
+ serial-id 219801A4HF823CP002J7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9d40 model WA6520
+ serial-id 219801A4HF823CP002J9
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9d80 model WA6520
+ serial-id 219801A4HF823CP002JC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9e20 model WA6520
+ serial-id 219801A4HF823CP002JJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9e40 model WA6520
+ serial-id 219801A4HF823CP002JK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9ee0 model WA6520
+ serial-id 219801A4HF823CP002JQ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-9f80 model WA6520
+ serial-id 219801A4HF823CP002JW
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a180 model WA6520
+ serial-id 219801A4HF823CP002KD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a220 model WA6520
+ serial-id 219801A4HF823CP002KK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a280 model WA6520
+ serial-id 219801A4HF823CP002KN
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a460 model WA6520
+ serial-id 219801A4HF823CP002L4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a560 model WA6520
+ serial-id 219801A4HF823CP002LD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a580 model WA6520
+ serial-id 219801A4HF823CP002LF
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a620 model WA6520
+ serial-id 219801A4HF823CP002LL
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a660 model WA6520
+ serial-id 219801A4HF823CP002LN
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a780 model WA6520
+ serial-id 219801A4HF823CP002LY
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a800 model WA6520
+ serial-id 219801A4HF823CP002M2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a840 model WA6520
+ serial-id 219801A4HF823CP002M4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a860 model WA6520
+ serial-id 219801A4HF823CP002M5
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a880 model WA6520
+ serial-id 219801A4HF823CP002M6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a920 model WA6520
+ serial-id 219801A4HF823CP002MC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a940 model WA6520
+ serial-id 219801A4HF823CP002MD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a0c0 model WA6520
+ serial-id 219801A4HF823CP002K6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a0e0 model WA6520
+ serial-id 219801A4HF823CP002K7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a1e0 model WA6520
+ serial-id 219801A4HF823CP002KH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a2a0 model WA6520
+ serial-id 219801A4HF823CP002KP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a4e0 model WA6520
+ serial-id 219801A4HF823CP002L8
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a5c0 model WA6520
+ serial-id 219801A4HF823CP002LH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a7a0 model WA6520
+ serial-id 219801A4HF823CP002LZ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a9c0 model WA6520
+ serial-id 219801A4HF823CP002MJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-a9e0 model WA6520
+ serial-id 219801A4HF823CP002MK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aa20 model WA6520
+ serial-id 219801A4HF823CP002MM
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aa60 model WA6520
+ serial-id 219801A4HF823CP002MP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aa80 model WA6520
+ serial-id 219801A4HF823CP002MQ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aaa0 model WA6520
+ serial-id 219801A4HF823CP002MR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aac0 model WA6520
+ serial-id 219801A4HF823CP002MS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ab00 model WA6520
+ serial-id 219801A4HF823CP002MV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ab20 model WA6520
+ serial-id 219801A4HF823CP002MW
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-aba0 model WA6520
+ serial-id 219801A4HF823CP002N0
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ac40 model WA6520
+ serial-id 219801A4HF823CP002N5
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ac60 model WA6520
+ serial-id 219801A4HF823CP002N6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ace0 model WA6520
+ serial-id 219801A4HF823CP002NB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ad00 model WA6520
+ serial-id 219801A4HF823CP002NC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-adc0 model WA6520
+ serial-id 219801A4HF823CP002NK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-af00 model WA6520
+ serial-id 219801A4HF823CP002NW
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b040 model WA6520
+ serial-id 219801A4HF823CP002P6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b160 model WA6520
+ serial-id 219801A4HF823CP002PH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b520 model WA6520
+ serial-id 219801A4HF823CP002QG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b900 model WA6520
+ serial-id 219801A4HF823CP002RG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b960 model WA6520
+ serial-id 219801A4HF823CP002RK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b2a0 model WA6520
+ serial-id 219801A4HF823CP002PT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b3a0 model WA6520
+ serial-id 219801A4HF823CP002Q2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b6e0 model WA6520
+ serial-id 219801A4HF823CP002QX
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b7c0 model WA6520
+ serial-id 219801A4HF823CP002R4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-b9e0 model WA6520
+ serial-id 219801A4HF823CP002RP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ba80 model WA6520
+ serial-id 219801A4HF823CP002RV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bb00 model WA6520
+ serial-id 219801A4HF823CP002RZ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bb80 model WA6520
+ serial-id 219801A4HF823CP002S3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bcc0 model WA6520
+ serial-id 219801A4HF823CP002SF
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bce0 model WA6520
+ serial-id 219801A4HF823CP002SG
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bd80 model WA6520
+ serial-id 219801A4HF823CP002SM
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-bf40 model WA6520
+ serial-id 219801A4HF823CP002T2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-c220 model WA6520
+ serial-id 219801A4HF823CP002TT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-c440 model WA6520
+ serial-id 219801A4HF823CP002VC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-c620 model WA6520
+ serial-id 219801A4HF823CP002VV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-c1e0 model WA6520
+ serial-id 219801A4HF823CP002TR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-ca40 model WA6520
+ serial-id 219801A4HF823CP002WX
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-db40 model WA6520
+ serial-id 219801A4HF823CP00319
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-e020 model WA6520
+ serial-id 219801A4HF823CP0032K
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-e100 model WA6520
+ serial-id 219801A4HF823CP0032S
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-e0a0 model WA6520
+ serial-id 219801A4HF823CP0032P
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 6c87-20ea-eb20 model WA6520
+ serial-id 219801A4HF823CP0035D
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 7449-d2b5-aa00 model WA6520
+ serial-id 219801A4HF8236P00L1H
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 7449-d2b5-c880 model WA6520
+ serial-id 219801A4HF8236P00L9C
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 7c7a-3c2c-a240 model WA6620X
+ serial-id 219801A2F58232E001J3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap 8c94-6a09-c750 model WA6520S-E
+ serial-id 219801A3PGP2290000L4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a09-cc60 model WA6520S-E
+ serial-id 219801A3PGP2290000NR
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a09-d430 model WA6520S-E
+ serial-id 219801A3PGP2290000SS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-1600 model WA6520S-E
+ serial-id 219801A3PGP22900064W
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-2020 model WA6520S-E
+ serial-id 219801A3PGP2290006B3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-2580 model WA6520S-E
+ serial-id 219801A3PGP2290006DW
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-2640 model WA6520S-E
+ serial-id 219801A3PGP2290006F8
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-2870 model WA6520S-E
+ serial-id 219801A3PGP2290006GD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-11d0 model WA6520S-E
+ serial-id 219801A3PGP22900062Q
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-1f50 model WA6520S-E
+ serial-id 219801A3PGP22900069P
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-1f90 model WA6520S-E
+ serial-id 219801A3PGP22900069T
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6a0b-26c0 model WA6520S-E
+ serial-id 219801A3PGP2290006FJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af4-b520 model WA6520S-E
+ serial-id 219801A3PGP22900141T
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af4-b3f0 model WA6520S-E
+ serial-id 219801A3PGP229001416
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af4-b5a0 model WA6520S-E
+ serial-id 219801A3PGP229001422
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af4-faf0 model WA6520S-E
+ serial-id 219801A3PGP22900156V
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af4-fbf0 model WA6520S-E
+ serial-id 219801A3PGP22900157C
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af5-0110 model WA6520S-E
+ serial-id 219801A3PGP2290015B0
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af5-40a0 model WA6520S-E
+ serial-id 219801A3PGP2290016CT
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 8c94-6af5-45b0 model WA6520S-E
+ serial-id 219801A3PGP2290016GF
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+#
+wlan ap 94a7-48fe-7560 model WA6520
+ serial-id 219801A3L58251P004TV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ smartrate-ethernet 1
+#
+wlan ap 94a7-48fe-7be0 model WA6520
+ serial-id 219801A3L58251P004WJ
+ map-configuration flash:/apcfg.txt
+ vlan 1
+ radio 1
+  max-power 20
+  rate mandatory 24
+  rate multicast auto
+  rate supported 36 48 54
+  rate disabled 6 9 12 18
+  radio enable
+  channel auto-select blacklist 52 56 60 64
+  channel band-width 20
+  mimo 2x2
+  dl-ofdma enable
+  bss-color enable
+  service-template leapmotor-guest vlan 290
+  service-template leapmotor-office vlan 200
+ radio 2
+  rate mandatory 12
+  rate multicast auto
+  rate supported 18 24 36 48 54
+  rate disabled 1 2 5.5 6 9 11
+  radio enable
+  mimo 2x2
+  su-txbf enable
+  dl-ofdma enable
+  bss-color enable
+  service-template leapmotor-guest vlan 290
+  service-template leapmotor-office vlan 200
+ gigabitethernet 1
+  port link-type trunk
+  port trunk permit vlan all
+ smartrate-ethernet 1
+#
+wlan ap b4d7-dbc0-4220 model WA6620X
+ serial-id 219801A2F58239E000F7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4480 model WA6620X
+ serial-id 219801A2F58239E000FV
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4560 model WA6620X
+ serial-id 219801A2F58239E000G2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4580 model WA6620X
+ serial-id 219801A2F58239E000G3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4600 model WA6620X
+ serial-id 219801A2F58239E000G7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4660 model WA6620X
+ serial-id 219801A2F58239E000GB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4700 model WA6620X
+ serial-id 219801A2F58239E000GH
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4980 model WA6620X
+ serial-id 219801A2F58239E000H4
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-5740 model WA6620X
+ serial-id 219801A2F58239E000LP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-41e0 model WA6620X
+ serial-id 219801A2F58239E000F5
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-42a0 model WA6620X
+ serial-id 219801A2F58239E000FC
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-43a0 model WA6620X
+ serial-id 219801A2F58239E000FM
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-43e0 model WA6620X
+ serial-id 219801A2F58239E000FP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-45e0 model WA6620X
+ serial-id 219801A2F58239E000G6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-47c0 model WA6620X
+ serial-id 219801A2F58239E000GP
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4a40 model WA6620X
+ serial-id 219801A2F58239E000HB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4c80 model WA6620X
+ serial-id 219801A2F58239E000HX
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4ce0 model WA6620X
+ serial-id 219801A2F58239E000J0
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4d20 model WA6620X
+ serial-id 219801A2F58239E000J2
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4da0 model WA6620X
+ serial-id 219801A2F58239E000J6
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4e60 model WA6620X
+ serial-id 219801A2F58239E000JD
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-4fe0 model WA6620X
+ serial-id 219801A2F58239E000JS
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-50a0 model WA6620X
+ serial-id 219801A2F58239E000JZ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-51c0 model WA6620X
+ serial-id 219801A2F58239E000K8
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-52c0 model WA6620X
+ serial-id 219801A2F58239E000KJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-55e0 model WA6620X
+ serial-id 219801A2F58239E000LB
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap b4d7-dbc0-56a0 model WA6620X
+ serial-id 219801A2F58239E000LJ
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap e878-ee53-cd40 model WA6620X
+ serial-id 219801A2F58231E001F7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap e878-ee53-d120 model WA6620X
+ serial-id 219801A2F58231E001G7
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap e878-ee53-d860 model WA6620X
+ serial-id 219801A2F58231E001J3
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+wlan ap e878-ee53-da20 model WA6620X
+ serial-id 219801A2F58231E001JK
+ vlan 1
+ radio 1
+ radio 2
+ gigabitethernet 1
+ gigabitethernet 2
+ gigabitethernet 3
+#
+return
