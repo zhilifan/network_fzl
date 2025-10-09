@@ -10,7 +10,7 @@ for bri in $(seq $sta $end); do
 done
 
 for int in $(seq $sta $end); do
-    echo "interface ran ten 1/0/$int ten 2/0/$int "
+    echo "interface ran gi 1/0/$int gi 2/0/$int "
     echo "p l g $int"
     echo " quit"
     ((counter++))
