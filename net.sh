@@ -16,7 +16,7 @@ for int in $(seq $sta $end); do
     ((counter++))
 done
 
-echo  "int range bri $sta to $end "
+echo  "int range bri $sta to bri $end "
 cat <<EOF
 port link-type trunk
 undo port trunk permit vlan 1
