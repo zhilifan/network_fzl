@@ -24,4 +24,4 @@ port trunk permit vlan 200 290 300 390 400 to 401 600 700
 link-aggregation mode dynamic
 stp root-protection
 EOF
-
+echo "test config" >>test.cfg
