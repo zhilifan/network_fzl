@@ -6,4 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Execute script
-        run: bash ./net.sh > ./output.txt # 运行仓库中的Shell脚本
+        run: bash ./net.sh 
