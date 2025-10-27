@@ -2,6 +2,7 @@
 counter=1
 sta=1
 end=42
+echo "shell" > shell.txt
 for bri in $(seq $sta $end); do
     echo "interface bri $bri"
     echo "link-a mode d"
