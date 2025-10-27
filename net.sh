@@ -1,7 +1,7 @@
 #!/bin/bash
 counter=1
 sta=1
-end=42
+end=44
 echo "shell" > shell.txt
 for bri in $(seq $sta $end); do
     echo "interface bri $bri"
